@@ -61,7 +61,6 @@ df['review_time_created'] = pd.to_datetime(df['review_time_created'])
 
 import re
 import nltk
-import string
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
@@ -146,7 +145,7 @@ import plotly.graph_objects as go
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-server = app.server
+# server = app.server
 
 # layout
 app.layout = html.Div([
