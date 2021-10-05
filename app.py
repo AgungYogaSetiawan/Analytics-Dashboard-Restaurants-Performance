@@ -1,10 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# ### Import Library & Prepare Data
-
-# In[27]:
-
+# Import Library & Prepare Data
 
 import pandas as pd
 import numpy as np
@@ -14,37 +8,9 @@ from dateutil import parser
 from datetime import date
 
 
-# In[2]:
-
 
 # Read dataset
 resto_df = pd.read_excel('Q3_competition_detail_dataset.xlsx')
-resto_df.head()
-
-
-# In[3]:
-
-
-# Shape data
-resto_df.shape
-
-
-# In[4]:
-
-
-resto_df.columns
-
-
-# In[5]:
-
-
-# Data type of dataset
-resto_df.info()
-
-
-# ### Data Preprocessing
-
-# In[6]:
 
 
 # Cleaning data
@@ -53,13 +19,11 @@ resto_df['longitude'] = resto_df['longitude'].astype('float')
 resto_df = resto_df.reset_index()
 resto_df = resto_df.drop(['index','cross_streets'],axis=1)
 resto_df['Price'] = resto_df['price'].apply(lambda x: len(str(x)))
-resto_df
 
-
-# In[7]:
 
 
 # Cleaning data column city
+
 resto_df['City'] = resto_df.city.apply(lambda x: x.strip().lower())
 
 # Column name changed
@@ -76,39 +40,23 @@ resto_df['City'] = resto_df.City.replace('studiocity', 'studio city')
 resto_df['City'] = resto_df.City.replace('santa moni', 'santa monica')
 
 # Set up capital letters for first letter
+
 resto_df['City'] = resto_df.City.apply(lambda x: str(x)[0].upper()+ str(x)[1:])
 resto_df['categories01'] = resto_df.categories01.apply(lambda x: str(x)[0].upper()+ str(x)[1:])
 resto_df['categories02'] = resto_df.categories02.apply(lambda x: str(x)[0].upper()+ str(x)[1:])
 resto_df['categories03'] = resto_df.categories03.apply(lambda x: str(x)[0].upper()+ str(x)[1:])
-resto_df.head()
-
-
-# In[8]:
 
 
 # Merge with data reviews
+
 resto_reviews_df = pd.read_excel('Q3_competition_review_dataset.xlsx')
 df = resto_reviews_df.merge(resto_df, left_on='id', right_on='id')
-df.head()
-
-
-# In[9]:
-
-
-df.info()
-
-
-# In[10]:
 
 
 # review_time_created change to datetime
+
 df['review_time_created'] = pd.to_datetime(df['review_time_created'])
-df.info()
 
-
-# ### NLP for columns review_text
-
-# In[11]:
 
 
 import re
@@ -118,22 +66,11 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
 
-# In[12]:
-
-
 data = df.review_text.values.tolist()
 eng = stopwords.words('english')
 data = [word for word in data if not word in eng]
-
-
-# In[13]:
-
-
 df['reviews_text_clean'] = data
-df
 
-
-# In[14]:
 
 
 # Make column categorizing the key words into specific values cared by customers
@@ -146,10 +83,7 @@ df['value_review'].replace({
     4.0: 'Waiting time',
     5.0: 'Others'
 }, inplace=True)
-df.head()
 
-
-# In[15]:
 
 
 # make city & category list
@@ -161,53 +95,22 @@ categories2 = df.groupby('categories02').count().sort_values(by='id', ascending=
 categories3 = df.groupby('categories03').count().sort_values(by='id', ascending=False).index.to_list()
 
 
-# ### Data Covid-19
-
-# In[16]:
+# Data Covid-19
 
 
 df_covid = pd.read_csv('latimes-place-totals.csv')
-df_covid.head()
-
-
-# In[17]:
-
-
-print(df_covid.isna().sum())
 df_covid = df_covid.drop('note', axis=1)
-df_covid.head()
-
-
-# In[18]:
-
-
 df_covid = df_covid[df_covid.county == 'Los Angeles']
 df_covid['date'] = pd.to_datetime(df_covid['date'])
 df_covid = df_covid[df_covid['date'] > '2021-01-01']
 df_covid.rename(columns={'name':'city'}, inplace=True)
-df_covid
-
-
-# In[19]:
-
-
 df_covid['city'] = df_covid['city'].apply(lambda x: x.split(':')[-1].strip())
-df_covid['city'].unique()
-
-
-# In[20]:
 
 
 covid_2021 = df_covid[['city','date','fips','confirmed_cases','population']].copy()
 covid_2021 = covid_2021.sort_values(by=['city','date']).reset_index().drop('index', axis=1)
-covid_2021.head()
 
 
-# In[21]:
-
-
-# new_cases_all = (covid_2021.sort_values(by=['city','date']).filter(['city','date','confirmed_cases']).groupby(['city']).confirmed_cases.diff())
-# covid_data = covid_2021.assign(new_cases = new_cases_all)
 new_cases = pd.DataFrame(None)
 
 for city in covid_2021.city.unique():
@@ -219,23 +122,16 @@ for city in covid_2021.city.unique():
 new_cases['new_daily_cases'] = new_cases['next_day_cases'] - new_cases['confirmed_cases']
 new_cases = new_cases[new_cases['new_daily_cases']>=0]
 data_covid = new_cases.sort_values(by=['city','date']).reset_index().drop('index',axis=1)
-data_covid.head()
-
-
-# In[22]:
 
 
 # save dataframe 
 # main_data = df.to_excel('main_data.xlsx', index=False)
-covid_df = data_covid.to_excel('data_covid.xlsx', index=False)
+# covid_df = data_covid.to_excel('data_covid.xlsx', index=False)
 # main_data = df.to_csv('main_data.csv', index=False)
-covid_df = data_covid.to_csv('data_covid.csv', index=False)
+# covid_df = data_covid.to_csv('data_covid.csv', index=False)
 
 
-# ### Build Dashboard using Dash Plotly
-
-# In[23]:
-
+# Build Dashboard using Dash Plotly
 
 # Import library
 import dash
@@ -246,9 +142,6 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Output, Input
 import plotly.express as px
 import plotly.graph_objects as go
-
-
-# In[24]:
 
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -294,9 +187,6 @@ app.layout = html.Div([
     
     
 ], style={'textAlign':'center'})
-
-
-# In[25]:
 
 
 # callback
@@ -420,16 +310,7 @@ def fig_line(multi_city):
     return fig_line_cov
 
 
-# In[26]:
-
 
 # Run app
 if __name__ == "__main__":
-    app.run_server()
-
-
-# In[ ]:
-
-
-
-
+    app.run_server(debug=True)
