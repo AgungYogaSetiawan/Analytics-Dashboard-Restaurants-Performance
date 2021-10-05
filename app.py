@@ -63,6 +63,7 @@ import re
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
+nltk.download('stopwords')
 
 
 data = df.review_text.values.tolist()
@@ -312,4 +313,4 @@ def fig_line(multi_city):
 
 # Run app
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server()
