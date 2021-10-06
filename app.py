@@ -146,7 +146,7 @@ import plotly.graph_objects as go
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-# server = app.server
+server = app.server
 
 # layout
 app.layout = html.Div([
@@ -313,4 +313,4 @@ def fig_line(multi_city):
 
 # Run app
 if __name__ == "__main__":
-    app.run_server()
+    app.run_server(debug=True)
