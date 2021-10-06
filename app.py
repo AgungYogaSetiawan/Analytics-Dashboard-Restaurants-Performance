@@ -224,7 +224,7 @@ def make_graph(food_choosen):
     df_map = df.copy()
     map_df = df_map[df_map['categories01'] == food_choosen]
     map_df.rename(columns={'review_rating':'Rating'}, inplace=True)
-    fig_map = px.scatter_mapbox(map_df, lat='latitude', lon='longitude', color='Rating', size='Price', hover_name='name',
+    fig_map = px.scatter_mapbox(map_df, lat='latitude', lon='longitude', color='Rating', size='Price', hover_name='name', hover_data=['is_claimed','is_closed'],
                                 title=f'where is the location of the restaurant that serves {food_choosen} <br> based on the map?', 
                                 color_continuous_scale=px.colors.sequential.Viridis, mapbox_style="carto-positron", height=500, size_max=6, zoom=8)
     
