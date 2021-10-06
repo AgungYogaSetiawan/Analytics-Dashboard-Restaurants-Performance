@@ -20,7 +20,7 @@ How to run this code in your local machine:
   python app.py
 ```
 - Step 5: then a localhost url will appear, copy that and paste it in your browser
-![SS URL](https://github.com/AgungYogaSetiawan/portfolio/blob/main/image.png)
+![SS URL](https://github.com/AgungYogaSetiawan/portfolio/blob/main/ss%20url.PNG)
 ## Preview Dashboard
 
 ![App Screenshot](https://github.com/AgungYogaSetiawan/portfolio/blob/main/Dash.png)
