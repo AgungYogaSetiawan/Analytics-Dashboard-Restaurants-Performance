@@ -26,3 +26,4 @@ How to run this code in your local machine:
 ![App Screenshot](https://github.com/AgungYogaSetiawan/portfolio/blob/main/Dash.png)
 
   
+note: if the web can't be opened, just keep reloading
